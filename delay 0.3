@@ -1,0 +1,232 @@
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+
+local Window = Rayfield:CreateWindow({
+Name = "MT CELSUS TELEPORT - NANAO GAMES",
+LoadingTitle = "MT CELSUS TELEPORT",
+LoadingSubtitle = "by NANAO GAMES",
+ConfigurationSaving = {Enabled = false}
+})
+
+local TeleportTab = Window:CreateTab("Teleport", 4483362458)
+local NotesTab = Window:CreateTab("Notes", 4483362458)
+
+local player = game.Players.LocalPlayer
+local delayTP = 1
+local autoTP = false
+local autoLoop = false
+local autoReset = false
+
+-- fungsi lompat + teleport
+local function jumpTeleport(x,y,z)
+
+local char = player.Character
+if char and char:FindFirstChild("Humanoid") and char:FindFirstChild("HumanoidRootPart") then
+
+Rayfield:Notify({
+Title = "Teleport",
+Content = "Teleport ke "..math.floor(x)..","..math.floor(y)..","..math.floor(z),
+Duration = 3
+})
+
+-- teleport dulu
+char.HumanoidRootPart.CFrame = CFrame.new(x,y,z)
+
+task.wait(0.15)
+
+-- baru lompat
+char.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+
+end
+end
+
+-- koordinat
+local BC = {3449,1102,20711}
+local SUMMIT = {3362,1054,20780}
+
+local CP = {
+
+{13,8,63},        -- CP1
+{15,8,817},       -- CP2
+{133,28,1427},    -- CP3
+{775,40,1544},    -- CP4
+{1574,12,1511},   -- CP5
+{2169,20,1518},   -- CP6
+{2815,20,1618},   -- CP7
+{3417,-116,1773}, -- CP8
+{3750,-88,2094},  -- CP9
+{4439,-88,2162},  -- CP10
+{4801,-68,1857},  -- CP11
+{5534,-72,1888},  -- CP12
+{5863,-40,1597},  -- CP13
+{5986,-24,1006},  -- CP14
+{6600,4,988},     -- CP15
+{7404,8,976},     -- CP16
+{7538,60,1468},   -- CP17
+{7515,60,2454},   -- CP18
+{7523,76,3419},   -- CP19
+{7575,80,4847},   -- CP20
+{7433,84,6543},   -- CP21
+{7490,156,7765},  -- CP22
+{7494,272,8933},  -- CP23
+{7534,268,9912},  -- CP24
+{7529,340,10822}, -- CP25
+{7136,500,11284}, -- CP26
+{6184,500,11238}, -- CP27
+{5168,584,11444}, -- CP28
+{4237,672,11272}, -- CP29
+{3317,836,11288}, -- CP30
+{2215,904,11305}, -- CP31
+{1693,944,11498}, -- CP32
+{1702,968,12335}, -- CP33
+{1630,984,13551}, -- CP34
+{1637,1040,14552},-- CP35
+{1633,896,15838}, -- CP36
+{1798,1088,16966},-- CP37
+{2006,1088,17763},-- CP38
+{3110,1088,17916},-- CP39
+{3155,1160,18802},-- CP40
+{3022,520,20327}, -- CP41
+{2956,680,20783}  -- CP42
+
+}
+
+local function waitForRespawn()
+
+local char = player.Character
+if char then
+char:BreakJoints()
+end
+
+player.CharacterAdded:Wait()
+
+local newChar = player.Character
+repeat task.wait() until newChar:FindFirstChild("HumanoidRootPart")
+
+task.wait(2)
+
+end
+
+-- AUTO TELEPORT
+TeleportTab:CreateToggle({
+Name = "AUTO TELEPORT",
+CurrentValue = false,
+Callback = function(Value)
+
+autoTP = Value
+
+if autoTP then
+
+task.spawn(function()
+
+repeat
+
+jumpTeleport(unpack(BC))
+task.wait(delayTP)
+
+for _,v in ipairs(CP) do
+if not autoTP then break end
+jumpTeleport(v[1],v[2],v[3])
+task.wait(delayTP)
+end
+
+jumpTeleport(unpack(SUMMIT))
+
+if autoReset then
+waitForRespawn()
+end
+
+until not autoTP or not autoLoop
+
+autoTP = false
+
+end)
+
+end
+
+end
+})
+
+-- AUTO LOOP
+TeleportTab:CreateToggle({
+Name = "AUTO BERULANG",
+CurrentValue = false,
+Callback = function(Value)
+autoLoop = Value
+end
+})
+
+TeleportTab:CreateToggle({
+Name = "RESPAWN / RESET KARAKTER",
+CurrentValue = false,
+Callback = function(Value)
+autoReset = Value
+end
+})
+
+-- AUTO RESET
+local delayOptions = {
+"0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9",
+"1","2","3","4","5","6","7","8","9"
+}
+
+-- tambah 10 sampai 100 otomatis
+for i = 10,100 do
+table.insert(delayOptions, tostring(i))
+end
+
+TeleportTab:CreateDropdown({
+Name = "DELAY TELEPORT",
+Options = delayOptions,
+CurrentOption = {"1"},
+MultipleOptions = false,
+Flag = "DelayTeleport",
+Callback = function(Option)
+
+delayTP = tonumber(Option[1])
+
+Rayfield:Notify({
+Title = "Delay Teleport",
+Content = "Delay diubah ke "..Option[1].." detik",
+Duration = 3
+})
+
+end
+})
+
+-- TELEPORT MANUAL
+TeleportTab:CreateButton({
+Name = "Teleport BC",
+Callback = function()
+jumpTeleport(unpack(BC))
+end
+})
+
+TeleportTab:CreateButton({
+Name = "Teleport SUMMIT",
+Callback = function()
+jumpTeleport(unpack(SUMMIT))
+end
+})
+
+-- CP manual
+for i,v in ipairs(CP) do
+TeleportTab:CreateButton({
+Name = "Teleport CP"..i,
+Callback = function()
+jumpTeleport(v[1],v[2],v[3])
+end
+})
+end
+
+-- NOTES
+NotesTab:CreateParagraph({
+Title = "NOTES",
+Content = "JANGAN LUPA JOIN DISCORD NANAOGAMES"
+})
+
+NotesTab:CreateButton({
+Name = "SALIN LINK DISCORD",
+Callback = function()
+setclipboard("https://discord.gg/Hsk4Q5KY2b")
+end
+})
