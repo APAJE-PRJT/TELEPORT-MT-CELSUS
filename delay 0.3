@@ -2,13 +2,14 @@ local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 
 local Window = Rayfield:CreateWindow({
 Name = "MT CELSUS TELEPORT - NANAO GAMES",
+Icon = 92483947987410,
 LoadingTitle = "MT CELSUS TELEPORT",
 LoadingSubtitle = "by NANAO GAMES",
 ConfigurationSaving = {Enabled = false}
 })
 
-local TeleportTab = Window:CreateTab("Teleport", 4483362458)
-local NotesTab = Window:CreateTab("Notes", 4483362458)
+local TeleportTab = Window:CreateTab("Teleport", 130551565616516)
+local NotesTab = Window:CreateTab("Notes", 97321022666868)
 
 local player = game.Players.LocalPlayer
 local delayTP = 1
@@ -25,7 +26,8 @@ if char and char:FindFirstChild("Humanoid") and char:FindFirstChild("HumanoidRoo
 Rayfield:Notify({
 Title = "Teleport",
 Content = "Teleport ke "..math.floor(x)..","..math.floor(y)..","..math.floor(z),
-Duration = 3
+Duration = 3,
+Image = 97392696311902
 })
 
 -- teleport dulu
